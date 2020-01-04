@@ -1,9 +1,12 @@
 const gameBoard = (() => {
   const boardDiv = document.getElementById("game-board");
-
+  let counter = 0;
   let boardArray = ["", "", "", "", "", "", "", "", ""];
   const getBoard = () => boardArray;
   const displayBoard = () => {
+    counter = 0;
+    boardDiv.innerHTML = "";
+    boardArray = ["", "", "", "", "", "", "", "", ""];
     for (let i = 0; i < boardArray.length; i++) {
       const s = document.createElement("div");
       s.id = `${i}`;
@@ -16,12 +19,12 @@ const gameBoard = (() => {
     displayController.displayResult();
   };
 
-  return { displayBoard, boardArray };
+  return { displayBoard, boardArray, counter };
 })();
 
 const game = (() => {
   let playerTurn = "x";
-  let counter = 0;
+
   const checkWinner = e => {
     const playerX = document.getElementById("player-x");
     const playerO = document.getElementById("player-o");
@@ -34,46 +37,64 @@ const game = (() => {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[3] == "x" && i[4] == "x" && i[5] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[6] == "x" && i[7] == "x" && i[8] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     } // rows
     if (i[0] == "x" && i[3] == "x" && i[6] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[1] == "x" && i[4] == "x" && i[7] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[2] == "x" && i[5] == "x" && i[8] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     } // columns
     if (i[0] == "x" && i[4] == "x" && i[8] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[2] == "x" && i[4] == "x" && i[6] == "x") {
       winner = `${playerXvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     } // diagonal
     if (i[0] == "o" && i[1] == "o" && i[2] == "o") {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[3] == "o" && i[4] == "o" && i[5] == "o") {
       winner = `${playerOvalue}`;
@@ -84,6 +105,8 @@ const game = (() => {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     } // rows
     if (i[0] == "o" && i[3] == "o" && i[6] == "o") {
       winner = `${playerOvalue}`;
@@ -94,30 +117,45 @@ const game = (() => {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[2] == "o" && i[5] == "o" && i[8] == "o") {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     } // columns
     if (i[0] == "o" && i[4] == "o" && i[8] == "o") {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     if (i[2] == "o" && i[4] == "o" && i[6] == "o") {
       winner = `${playerOvalue}`;
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     // diagonal
-    if ((winner = "" && counter == 9)) console.log("TIE");
+
+    if (winner === "" && gameBoard.counter > 8) {
+      const resultText = document.querySelector("#result-text");
+      resultText.innerHTML = `It's a tie.`;
+    }
 
     if (winner !== "") {
       const resultText = document.querySelector("#result-text");
       resultText.innerHTML = `${winner} wins!`;
+      endGame();
+      gameBoard.counter = 0;
     }
     console.log(winner);
+    console.log(gameBoard.counter);
   };
 
   const addMark = e => {
@@ -133,11 +171,15 @@ const game = (() => {
       gameBoard.boardArray[e.target.id] = "o";
       playerTurn = "x";
     }
-    counter++;
+    gameBoard.counter++;
     checkWinner();
   };
 
-  const endGame = () => {};
+  const endGame = () => {
+    console.log("game ended");
+    const square = document.querySelectorAll(".square");
+    square.forEach(s => s.removeEventListener("click", game.addMark));
+  };
 
   return { addMark };
 })();
@@ -152,7 +194,9 @@ const displayController = (() => {
   const playerO = document.getElementById("player-o");
   const startBtn = document.getElementById("start");
   const restartBtn = document.getElementById("restart");
+  //restartBtn.addEventListener("click", gameBoard.displayBoard);
   startBtn.addEventListener("click", gameBoard.displayBoard);
+
   console.log(startBtn);
   //startBtn.addEventListener("click", restartGame);
 
@@ -174,7 +218,16 @@ const displayController = (() => {
     const playerXvalue = playerX.value;
     const playerOvalue = playerO.value;
     const resultDiv = document.querySelector("#result");
+
     resultDiv.innerHTML = `<p>Player X: ${playerXvalue}</p>    <p>Player O: ${playerOvalue}</p>    <p id="result-text"></p>    <button id="restart">Restart game</button>`;
+    const restartBtn = document.getElementById("restart");
+    restartBtn.addEventListener("click", restartGame);
+  };
+
+  const restartGame = () => {
+    gameBoard.displayBoard();
+    gameBoard.counter = 0;
+    gameBoard.boardArray = ["", "", "", "", "", "", "", "", ""];
   };
 
   return {
@@ -184,8 +237,3 @@ const displayController = (() => {
     displayResult
   };
 })();
-
-const player = name => {
-  const getName = () => name;
-  return { getName };
-};
